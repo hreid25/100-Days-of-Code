@@ -2,12 +2,8 @@ import random
 
 blackjack_limit = 21
 
-# immediately deal out two random cards between the list of available values
-cards = [11,2,3,4,5,6,7,8,9,10,10,10,10]
 
-# write a function to return another card and add them to the players cards.
-# At the same time add another card to the dealers hand. If the dealers hand is
-# between 18 and 21, have them hold.
+cards = [11,2,3,4,5,6,7,8,9,10,10,10,10]
 
 def calculate_scores(cards):
     score = sum(cards)
@@ -49,6 +45,7 @@ while spin_up is True:
             else:
                 players_cards.append(random.choice(cards))
                 dealers_cards.append(random.choice(cards))
+        # Determine whether a blackjack was drawn by either the player or dealer
         if 10 and 11 in players_cards:
             print("Player Blackjack! Congratulations!")
             bust_flag = False
@@ -64,12 +61,14 @@ while spin_up is True:
             bust_flag = False
             dealer_limit = False
             break
+        # calculate the scores and print them out
         players_score = calculate_scores(players_cards)
         dealers_score = calculate_scores(dealers_cards)
         print_the_hands(players_cards,dealers_cards)
         bust_flag = True
         while bust_flag is True:
             if players_score <= 21:
+                # let the player draw cards until they bust or until they no longer want more cards.
                 another = input("Type 'y' to get another card, type 'n' to pass: ")
                 if another == 'y':
                     new_player_card, new_dealer_card = another_card(players_score,dealers_score)
@@ -78,6 +77,7 @@ while spin_up is True:
                     players_score = calculate_scores(players_cards)
                     dealers_score = calculate_scores(dealers_cards)
                     print_the_hands(players_cards,dealers_cards)
+                # If the player is done drawing cards, let the computer play now.
                 elif another == 'n':
                     dealer_limit = True
                     while dealer_limit is True:
@@ -87,7 +87,7 @@ while spin_up is True:
                         elif dealers_score <= 16:
                             dealers_cards.append(random.choice(cards))
                             dealers_score = calculate_scores(dealers_cards)
-                    # Compare the player and dealers scores
+                    # Compare the player and dealers scores and send appropriate messages
                     if players_score > dealers_score:
                         print('Congratulations, you won the hand!')
                         print("Your score: ", players_score, "Your hand: ", players_cards)
