@@ -6,11 +6,13 @@ def print_report():
     for key, value in menu.resources.items():
         if key == "water" or key == "milk":
             std_measure = "ml"
+            print(str(key.title()),": ", value, std_measure)
         elif key == "coffee":
             std_measure = "g"
-        # elif key == "Money": 
-        # Need to print out the total Money accrued so far.
-        print(str(key.title()),": ", value, std_measure)
+            print(str(key.title()),": ", value, std_measure)
+        elif key == "Money":
+            std_measure = "$"
+            print(str(key.title()),": ", std_measure, value)
 
 def check_resources_sufficient(item_ordered):
     # Check only the resources required to make the drink are sufficient
@@ -72,10 +74,10 @@ def make_coffee(item_ordered, drink_cost,change_to_give):
 def main():
     order_processing = True
     while order_processing == True:
-        item_ordered = input("What would you like? (espresso/latte/cappuccino)")
+        item_ordered = input("What would you like? (espresso/latte/cappuccino): ")
         # Print a report of the coffee machines resources when user types 'report'
         if item_ordered.lower() == "report":
-            print(menu.resources)
+            print_report()
         elif item_ordered.lower() == "off":
             order_processing == False
             break
