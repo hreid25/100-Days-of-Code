@@ -12,20 +12,18 @@ def print_report():
         # Need to print out the total Money accrued so far.
         print(str(key.title()),": ", value, std_measure)
 
-# Turn off the machine by entering 'off' to the prompt
-# def turn_off_machine():
-
 def check_resources_sufficient(item_ordered):
     # Check only the resources required to make the drink are sufficient
-    for totals_key, totals_value in menu.resources.items():
-        drink_resource_cost = menu.MENU[item_ordered]['ingredients'][totals_key]
-        if float(drink_resource_cost) < float(totals_value):
+    for key, value in menu.MENU[item_ordered]['ingredients'].items():
+        # drink_ingredients_dict = {k:v for (k,v) in menu.MENU[item_ordered]['ingredients'].items()}
+        total_resources_remain = menu.resources[key]
+        if float(value) < float(total_resources_remain):
             # print("drink ", totals_key, " cost: ", drink_resource_cost, " available ", totals_key, " cost: ", totals_value)
             resources_sufficient = True
-        elif float(drink_resource_cost) > float(totals_value):
+        elif float(value) > float(total_resources_remain):
             # print("drink ", totals_key, " cost: ", drink_resource_cost, " available ", totals_key, " cost: ", totals_value)
             resources_sufficient = False
-            print(f"Sorry, there isn't enough {totals_key}.")
+            print(f"Sorry, there isn't enough {key}.")
             break
     return resources_sufficient
 
