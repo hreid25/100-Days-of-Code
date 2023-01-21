@@ -7,7 +7,7 @@ tim.color("blue")
 start_position = tim.position()
 
 def random_color():
-    color = (randint(1,256),randint(1,256),randint(1,256))
+    color = (randint(1,255),randint(1,255),randint(1,255))
     return color
 
 screen = Screen()
@@ -24,4 +24,9 @@ for shape, angle in angles.items():
         tim.right(angle)
 
 screen.exitonclick()
+
+# Each time it progresses by the same distance, it chooses a new direction and changes color
+# random walk. Increase line thickness and speed up the turtle.
+
+
 
