@@ -19,7 +19,7 @@ def turn():
 
 def move_turtle():
     movement = True
-    tim.speed(5)
+    tim.speed(10)
     while movement == True:
         tim.pencolor(random_color())
         new_direction(50)
