@@ -3,27 +3,37 @@ import colorgram
 from turtle import Turtle, Screen
 import random
 
-# reset the turtles position once it reaches the edge of the window
-# Move tim up 50 from the leftmost dot from the opposite edge and repeat the dotting process.
-
 tim = Turtle()
 tim.shape("turtle")
 # tim.color("coral")
 screen = Screen()
 screen.colormode(255)
-screen.screensize(100, 100)
+canvasheight = 10
+canvaswidth = 10
+screen.screensize(canvasheight,canvaswidth)
 
+print(type(screen.screensize(canvasheight,canvaswidth)))
 color_list = [(249, 248, 248), (238, 246, 243), (246, 240, 244), (235, 241, 246), (1, 13, 31), (52, 25, 17), (219, 127, 106), (9, 105, 160), (242, 214, 69), (150, 84, 39)]
 
 def return_rgb():
     color = random.choice(color_list)
-    print(color)
     return color 
 
+def set_starting_pos():
+    pass
+
+def move_y_coordinates(current_y):
+    current_y += 50
+    y_coord = (0.00,current_y)
+    return y_coord
+
+# start_pos = tim.setpos(10,0)
+print(screen.window_width(),screen.window_height())
 for i in range(100):
-    if tim.pos() == (850.00,0.00):
-        tim.setpos(0.00,50.00)
-    print(tim.pos(), i)
+    # print(tim.pos()[0],screen.canvwidth())
+    if tim.pos()[1] > screen.screensize():
+        tim.penup()
+        tim.setpos(move_y_coordinates(tim.pos()[1]))
     tim.dot(20)
     tim.penup()
     tim.pencolor(return_rgb())
