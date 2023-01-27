@@ -58,7 +58,6 @@ while is_race_on:
      
 # screen.listen()
 
-# # screen.onkey(key="space", fun=move_forwards)
 # screen.onkey(key="A".lower(), fun=move_counterclockwise)
 # screen.onkey(key="D".lower(), fun=move_clockwise)
 # screen.onkey(key="S".lower(), fun=move_backwards)
