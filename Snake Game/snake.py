@@ -1,4 +1,5 @@
 from turtle import Turtle
+import random
 
 STARTING_POSITIONS = [(0.00,0.00),(-20.00,0.00),(-40.00,0.00)]
 MOVE_DISTANCE = 20
@@ -43,3 +44,5 @@ class Snake:
     def left(self):
         if self.head.heading() != RIGHT:
             self.head.setheading(LEFT)
+
+
