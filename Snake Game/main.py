@@ -5,6 +5,7 @@ from food import Food
 from scoreboard import Scoreboard
 import sqlite3
 import os
+from user import User
 
 # Create a title screen and a "Start Game" & "End" option
 # grow the snake each time it eats food
@@ -21,16 +22,18 @@ screen.title("Let's Play the Snake Game")
 # tracer disables when value 0 is passed through
 screen.tracer(0)
 
+user = screen.textinput("Enter your player name!", "Please enter your name: ")
+db = User(user)
 snake = Snake()
 food = Food()
 scoreboard = Scoreboard()
 
-conn = sqlite3.connect('snakescores.db')
-# Check existence of userdata table
-if not scoreboard.check_table_exists(conn, ('scoredata',)):
-    scoreboard.create_table()
-conn.commit()
-conn.close()
+# conn = sqlite3.connect('snakescores.db')
+# # Check existence of userdata table
+# if not user.check_table_exists(conn, ('scoredata',)):
+#     scoreboard.create_table()
+# conn.commit()
+# conn.close()
 
 screen.listen()
 screen.onkey(snake.up,"Up")
@@ -47,6 +50,9 @@ while game_on:
     if snake.head.distance(food) < 16.5:
         food.touched_food()
         scoreboard.user_scored()
+    if snake.head.xcor() > 280 or snake.head.xcor() < -280 or snake.head.ycor() > 280 or snake.head.ycor() < -280:
+        game_on = False
+        scoreboard.game_ended()
         # print("found the food!")
         # recreate the food in another location and destroy the last piece of food
     # Add a piece to the snake after eating
