@@ -1,6 +1,13 @@
 from scoreboard import Scoreboard
 import sqlite3
-CONNECTION = sqlite3.connect('snakescores.db') 
+import os
+
+cwd = os.getcwd()
+path = (cwd) + "\Snake Game"
+print(path)
+os.chdir(path)
+
+CONNECTION = sqlite3.connect('snakescores.db')
 
 class User(Scoreboard):
     def __init__(self, username):
@@ -9,25 +16,25 @@ class User(Scoreboard):
         if not self.check_table_exists(CONNECTION, ('scoredata',)):
             print("table does not exist")
             self.create_table()
-        else:
-            self.check_user_exist(CONNECTION, ('scoredata',))
+        self.check_user_exist(CONNECTION,('scoredata',))
+           
 
     def check_user_exist(self,dbconn,table_name):
         c = CONNECTION.cursor()
         c.execute("SELECT username FROM scoredata WHERE username=?", (self.username,))
         results = c.fetchall()
-        print(results)
+        print(type(self.username),type(self.score))
         if not results:
-            c.execute("INSERT INTO scoredata VALUES(NULL,:username)", {'username':self.username})
+            c.execute("INSERT INTO scoredata VALUES(:username,:score)",{'username': self.username,'score': self.score})
             CONNECTION.commit()
         # CONNECTION.close()
+
 
     def create_table(self):
         c = CONNECTION.cursor()
         c.execute("""CREATE TABLE scoredata (
-            record_id INTEGER NOT NULL PRIMARY KEY,
             username text,
-            score,
+            score INTEGER,
             UNIQUE(username)
             )""")
         CONNECTION.commit()
@@ -43,6 +50,6 @@ class User(Scoreboard):
         else:
             table_exist = False
             print(f"{table_name} does not exist")
-        # CONNECTION.commit()
+        CONNECTION.commit()
         # CONNECTION.close()
         return table_exist

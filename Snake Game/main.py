@@ -3,17 +3,7 @@ import time
 from snake import Snake
 from food import Food
 from scoreboard import Scoreboard
-import sqlite3
-import os
 from user import User
-
-# Create a title screen and a "Start Game" & "End" option
-# grow the snake each time it eats food
-# randomize the location of the food
-# If the snake hits itself or the edge of the screen, the snake dies and the game restarts
-path = os.getcwd()
-print(path)
-os.chdir(path + "//Snake Game")
 
 screen = Screen()
 screen.setup(width=600,height=600)
@@ -22,18 +12,11 @@ screen.title("Let's Play the Snake Game")
 # tracer disables when value 0 is passed through
 screen.tracer(0)
 
-user = screen.textinput("Enter your player name!", "Please enter your name: ")
-db = User(user)
+# user = screen.textinput("Enter your player name!", "Please enter your name: ")
+# db = User(user)
 snake = Snake()
 food = Food()
 scoreboard = Scoreboard()
-
-# conn = sqlite3.connect('snakescores.db')
-# # Check existence of userdata table
-# if not user.check_table_exists(conn, ('scoredata',)):
-#     scoreboard.create_table()
-# conn.commit()
-# conn.close()
 
 screen.listen()
 screen.onkey(snake.up,"Up")
@@ -49,12 +32,11 @@ while game_on:
     # Detect collision with Food
     if snake.head.distance(food) < 16.5:
         food.touched_food()
-        scoreboard.user_scored()
-    if snake.head.xcor() > 280 or snake.head.xcor() < -280 or snake.head.ycor() > 280 or snake.head.ycor() < -280:
+        scoreboard.increase_score()
+    # Detect collision with wall
+    if snake.head.xcor() > 290 or snake.head.xcor() < -290 or snake.head.ycor() > 290 or snake.head.ycor() < -290:
         game_on = False
-        scoreboard.game_ended()
-        # print("found the food!")
-        # recreate the food in another location and destroy the last piece of food
+        scoreboard.game_over()
     # Add a piece to the snake after eating
 
 
