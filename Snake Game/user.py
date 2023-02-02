@@ -2,10 +2,10 @@ from scoreboard import Scoreboard
 import sqlite3
 import os
 
-cwd = os.getcwd()
-path = (cwd) + "\Snake Game"
-print(path)
-os.chdir(path)
+# cwd = os.getcwd()
+# path = (cwd) + "\Snake Game"
+# print(path)
+# os.chdir(path)
 
 CONNECTION = sqlite3.connect('snakescores.db')
 
