@@ -12,8 +12,8 @@ screen.title("Let's Play the Snake Game")
 # tracer disables when value 0 is passed through
 screen.tracer(0)
 
-# user = screen.textinput("Enter your player name!", "Please enter your name: ")
-# db = User(user)
+user = screen.textinput("Enter your player name!", "Please enter your name: ")
+db = User(user)
 snake = Snake()
 food = Food()
 scoreboard = Scoreboard()
@@ -38,11 +38,13 @@ while game_on:
     if snake.head.xcor() > 290 or snake.head.xcor() < -290 or snake.head.ycor() > 290 or snake.head.ycor() < -290:
         game_on = False
         scoreboard.game_over()
+        db.insert_score(scoreboard.score)
     # Detect collision with tail.
     for segment in snake.segments[1:]:
         if snake.head.distance(segment) < 10:
             game_on = False
             scoreboard.game_over()
+            db.insert_score(scoreboard.score)
     # if head collides with any segment in the tail:
         # trigger game over sequence.
 

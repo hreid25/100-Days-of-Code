@@ -18,17 +18,21 @@ class User(Scoreboard):
             self.create_table()
         self.check_user_exist(CONNECTION,('scoredata',))
            
+    def insert_score(self,score):
+        c = CONNECTION.cursor()
+        print(score)
+        c.execute("UPDATE scoredata SET score=? WHERE username=?", (score,self.username))
+        CONNECTION.commit()
 
     def check_user_exist(self,dbconn,table_name):
         c = CONNECTION.cursor()
         c.execute("SELECT username FROM scoredata WHERE username=?", (self.username,))
         results = c.fetchall()
-        print(type(self.username),type(self.score))
+        # print(type(self.username),type(self.score))
         if not results:
             c.execute("INSERT INTO scoredata VALUES(:username,:score)",{'username': self.username,'score': self.score})
             CONNECTION.commit()
         # CONNECTION.close()
-
 
     def create_table(self):
         c = CONNECTION.cursor()
@@ -53,3 +57,4 @@ class User(Scoreboard):
         CONNECTION.commit()
         # CONNECTION.close()
         return table_exist
+    

@@ -29,6 +29,15 @@ class Snake:
         # Add a new segment to the snake
         self.add_segment(self.segments[-1].position())
 
+    def inc_speed():
+        # for every 500 points the user accumulates, the speed of the snake should increase
+        pass
+
+    def snake_crazy():
+        # for every 2000 points the user accumulates the snake should flash random different colors
+        # and increase in speed for 7 seconds.
+        pass
+    
     def move(self):
         for position in range(len(self.segments) -1, 0, -1):
             new_x = self.segments[position - 1].xcor()
