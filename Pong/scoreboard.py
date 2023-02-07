@@ -10,7 +10,7 @@ class player_one(Turtle):
         self.penup()
         self.hideturtle()
         self.goto(-500,360)
-        self.pensize(15)
+        self.pensize(13)
         self.write(f"{self.score}",font=('Der Frauenhexer',75,'normal'))
 
 
@@ -23,5 +23,5 @@ class player_two(Turtle):
         self.penup()
         self.hideturtle()
         self.goto(500,360)
-        self.pensize(15)
+        self.pensize(13)
         self.write(f"{self.score}",font=('Der Frauenhexer',75,'normal'))

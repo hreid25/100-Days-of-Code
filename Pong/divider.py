@@ -15,7 +15,7 @@ class Divider(Turtle):
     def draw_divider(self):
         dashes = int(480 / 20)
         x = 20
-        print(dashes)
+        # print(dashes)
         for i in range(dashes):
             self.pendown()
             self.forward(x)
