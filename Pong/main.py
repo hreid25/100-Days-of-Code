@@ -1,13 +1,13 @@
 from turtle import Turtle, Screen
 from divider import Divider
 from ball import Ball
-from scoreboard import player_one,player_two
+from scoreboard import create_scoreboard
 from paddles import Paddle
 import time
 
 screen = Screen()
 screen.bgcolor("black")
-screen.screensize(1000,1000)
+screen.setup(width=800,height=600)
 screen.title("Pong")
 screen.tracer(0)
 # Create ball
@@ -15,11 +15,11 @@ ball = Ball()
 # Create Dividing line
 divide_screen = Divider()
 # Initialize player score displays
-p1_score = player_one()
-p2_score = player_two()
+p1_score = create_scoreboard((-200,200))
+p2_score = create_scoreboard((150,200))
 # Initialize player paddles
-p1_paddle = Paddle((-775,0))
-p2_paddle = Paddle((775,0))
+p1_paddle = Paddle((-350,0))
+p2_paddle = Paddle((350,0))
 # Listen for inputs
 screen.listen()
 # PADDLE ONE CONTROLS
@@ -31,19 +31,30 @@ screen.onkey(p2_paddle.down, "Down")
 
 game_on = True
 while game_on:
+    time.sleep(0.05)
     screen.update()
-    time.sleep(0.1)
     # Put the ball in play
     ball.move()
-    # Detect if ball has hit the top of the screen
-    if ball.ycor() > 535 or ball.ycor() < -535:
-        print('hit top wall')
+    print(ball.xcor(),ball.ycor())
+    # print(ball.distance(p2_paddle),ball.xcor())
+    # Detect if ball has hit the top or bottom of the screen
+    if ball.ycor() > 300 or ball.ycor() < -300:
         ball.change_direction_y() 
-    # Detect if ball has hit right wall
-    elif ball.xcor() >= 850 or ball.xcor() <= -850:
-        game_on = False
     # Detect collision with right paddle
-    elif ball.distance(p1_paddle) < 50 and ball.xcor() > 775 or ball.distance(p2_paddle) < 50 and ball.xcor() < -775:
+    if ball.distance(p2_paddle) < 50 and ball.xcor() > 330 or ball.distance(p1_paddle) < 50 and ball.xcor() < -330: 
+        print("Made Contact")
         ball.change_direction_x()
+    # Detect if ball has hit right wall
+    if ball.xcor() > 390 or ball.xcor() <= -390:
+        if ball.xcor() <= -390:
+            p1_score.score += 1
+            p1_score.update_scoreboard()
+        if ball.xcor()>390:
+            p2_score.score += 1
+            p2_score.update_scoreboard()
+        ball.goto(0,0)
+        ball.change_direction_x()
+        ball.move()
+        
 
 screen.exitonclick()

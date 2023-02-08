@@ -1,27 +1,19 @@
 from turtle import Turtle
 
 
-class player_one(Turtle):
+class create_scoreboard(Turtle):
 
-    def __init__(self):
+    def __init__(self, position):
         super().__init__()
         self.score = 0
         self.color("white")
         self.penup()
         self.hideturtle()
-        self.goto(-500,360)
-        self.pensize(13)
+        # self.pensize(1)
+        self.goto(position)
+        self.update_scoreboard()
+
+    def update_scoreboard(self):
+        self.clear()
         self.write(f"{self.score}",font=('Der Frauenhexer',75,'normal'))
-
-
-class player_two(Turtle):
-
-    def __init__(self):
-        super().__init__()
-        self.score = 0
-        self.color("white")
-        self.penup()
-        self.hideturtle()
-        self.goto(500,360)
-        self.pensize(13)
-        self.write(f"{self.score}",font=('Der Frauenhexer',75,'normal'))
+        pass
