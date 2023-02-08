@@ -35,15 +35,17 @@ while game_on:
     screen.update()
     # Put the ball in play
     ball.move()
-    print(ball.xcor(),ball.ycor())
+    # print(ball.xcor(),ball.ycor())
     # print(ball.distance(p2_paddle),ball.xcor())
     # Detect if ball has hit the top or bottom of the screen
     if ball.ycor() > 300 or ball.ycor() < -300:
         ball.change_direction_y() 
-    # Detect collision with right paddle
+    # Detect collision with right or left paddle
     if ball.distance(p2_paddle) < 50 and ball.xcor() > 330 or ball.distance(p1_paddle) < 50 and ball.xcor() < -330: 
-        print("Made Contact")
+        # Change Direction and Increase Speed
         ball.change_direction_x()
+        ball.speed_value += 1
+        ball.speed(ball.speed_value)
     # Detect if ball has hit right wall
     if ball.xcor() > 390 or ball.xcor() <= -390:
         if ball.xcor() <= -390:
@@ -56,5 +58,4 @@ while game_on:
         ball.change_direction_x()
         ball.move()
         
-
 screen.exitonclick()

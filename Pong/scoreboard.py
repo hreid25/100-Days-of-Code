@@ -9,11 +9,9 @@ class create_scoreboard(Turtle):
         self.color("white")
         self.penup()
         self.hideturtle()
-        # self.pensize(1)
         self.goto(position)
         self.update_scoreboard()
 
     def update_scoreboard(self):
         self.clear()
         self.write(f"{self.score}",font=('Der Frauenhexer',75,'normal'))
-        pass
