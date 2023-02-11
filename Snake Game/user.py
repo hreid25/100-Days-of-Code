@@ -24,7 +24,7 @@ class User(Scoreboard):
         print(score)
         c.execute("SELECT score FROM scoredata where username=?",(self.username,))
         previous_score = c.fetchone()[0]
-        if int(self.score) > int(previous_score):
+        if score > previous_score:
             c.execute("UPDATE scoredata SET score=? WHERE username=?", (score,self.username))
         CONNECTION.commit()
 
