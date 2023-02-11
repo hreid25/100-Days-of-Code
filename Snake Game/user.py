@@ -1,6 +1,7 @@
 from scoreboard import Scoreboard
 import sqlite3
-import os
+ALIGNMENT = "center"
+FONT = ("Courier", 20, "normal")
 
 # cwd = os.getcwd()
 # path = (cwd) + "\Snake Game"
@@ -21,8 +22,18 @@ class User(Scoreboard):
     def insert_score(self,score):
         c = CONNECTION.cursor()
         print(score)
-        c.execute("UPDATE scoredata SET score=? WHERE username=?", (score,self.username))
+        c.execute("SELECT score FROM scoredata where username=?",(self.username,))
+        previous_score = c.fetchone()[0]
+        if int(self.score) > int(previous_score):
+            c.execute("UPDATE scoredata SET score=? WHERE username=?", (score,self.username))
         CONNECTION.commit()
+
+    def get_high_score(self):
+        c = CONNECTION.cursor()
+        c.execute("SELECT MAX(score) FROM scoredata")
+        high_score = c.fetchone()[0]
+        CONNECTION.commit()
+        return high_score
 
     def check_user_exist(self,dbconn,table_name):
         c = CONNECTION.cursor()

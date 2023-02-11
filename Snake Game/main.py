@@ -13,10 +13,16 @@ screen.title("Let's Play the Snake Game")
 screen.tracer(0)
 
 user = screen.textinput("Enter your player name!", "Please enter your name: ")
+
 db = User(user)
+get_high_score = db.get_high_score()
+
 snake = Snake()
 food = Food()
 scoreboard = Scoreboard()
+scoreboard.post_scoreboard(0,270)
+high_scoreboard = Scoreboard()
+high_scoreboard.post_high_score(get_high_score,0,240)
 
 screen.listen()
 screen.onkey(snake.up,"Up")
