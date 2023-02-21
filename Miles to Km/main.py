@@ -1,6 +1,6 @@
 from tkinter import *
 
-FONT = ('Arial',12)
+FONT = ('Helvetica',12)
 
 def get_kms():
     mile_nums = float(miles_entry.get())
