@@ -21,40 +21,43 @@ def timer_restart():
 
 # ---------------------------- TIMER MECHANISM ------------------------------- # 
 def timer_start():
+
+    def calc_timer(timer_duration, break_name):
+        canvas.itemconfig(b_type, text=break_name)
+        timer_ends_at = time_start + timedelta(seconds=timer_duration)
+        timer = timer_ends_at - datetime.now()
+        return timer
+
     global REPS
     REPS += 1
-    # set current time btn was clicked
+    print(REPS)
     b_type = canvas.create_text(102,100,text='Work Timer',font=(FONT_NAME,'20','bold'), fill='white',tag='b_type')
     time_start = datetime.now()
-    # set the time at which the timer should end
-    work_end = time_start + timedelta(minutes=25)
-    work_timer = work_end - datetime.now()
-    # set the short break timer
-    sb_end = time_start + timedelta(minutes=5)
-    sb_timer = sb_end - datetime.now()
-    # set the long break timer
-    lb_end = time_start + timedelta(minutes=25)
-    lb_timer = lb_end - datetime.now()
-    # call the count down function according to the reps
-    # short break timer occurs 2/4/6
+    # Short break timer occurs 2/4/6
     if REPS % 2 == 0:
-        canvas.itemconfig(b_type, text='Short Break')
-        count_down(sb_timer)
-    # long break timer occurs at 8 reps
+        timer = calc_timer(5,'Short Break')
+        count_down(timer)
+    # Long break timer occurs at 8 reps
     elif REPS % 8 == 0:
-        canvas.itemconfig(b_type, text='Long Break')
-        count_down(lb_timer)
-    # work timer occurs 1/3/5/7 rep
+        timer = calc_timer(10,'Long Break')
+        count_down(timer)
+        # TODO still need to add pomodoro checkmark to canvas
+        # TODO Longbreak never triggers since first if condition remains true on even values
+    # Work timer occurs 1/3/5/7 rep
     else:
-        canvas.itemconfig(b_type, text='Work Timer')
-        count_down(work_timer)
+        timer = calc_timer(10,'Work Timer')
+        count_down(timer)
 
 # # ---------------------------- COUNTDOWN MECHANISM ------------------------------- # 
 
-def count_down(timer):
-    canvas.itemconfig(timer_text, text=timer)
-    window.after(1000, count_down, timer - timedelta(seconds=1))
-
+def count_down(countdown):
+    canvas.itemconfig(timer_text, text=countdown)
+    if countdown > timedelta(seconds=0):
+        window.after(1000, count_down, countdown - timedelta(seconds=1))
+    else:
+        canvas.delete('b_type')
+        timer_start()
+        
 # ---------------------------- UI SETUP ------------------------------- #
 
 window = Tk()
