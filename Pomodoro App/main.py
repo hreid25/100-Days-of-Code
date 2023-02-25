@@ -38,7 +38,7 @@ def timer_start():
     time_start = datetime.now()
     # Long break timer occurs at 8 reps
     if REPS % 8 == 0:
-        timer = calc_timer(8,'Break')
+        timer = calc_timer(25,'Break')
         count_down(timer)
     # Short break timer occurs 2/4/6
     elif REPS % 2 == 0:
@@ -46,7 +46,7 @@ def timer_start():
         count_down(timer)
     # Work timer occurs 1/3/5/7 rep
     else:
-        timer = calc_timer(8,'Work Timer')
+        timer = calc_timer(25,'Work Timer')
         count_down(timer)
 
 # # ---------------------------- COUNTDOWN MECHANISM ------------------------------- # 
