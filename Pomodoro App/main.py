@@ -74,6 +74,7 @@ window.config(padx=100,pady=50, bg=GREEN)
 tomato_img = PhotoImage(file="tomato.png")
 canvas = Canvas(width=200,height=224, bg=GREEN, highlightthickness=0)
 canvas.create_image(102,112,image=tomato_img)
+# canvas.create_image(0,0,image=tomato_img)
 timer_text = canvas.create_text(102,130,text="00:00", font=(FONT_NAME, "20", "bold"),fill='white',tag='timer_default_canv')
 canvas.grid(column=2,row=2)
 
