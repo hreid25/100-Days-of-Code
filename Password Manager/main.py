@@ -1,5 +1,7 @@
 from tkinter import *
-import random
+from tkinter import messagebox
+from random import choice, randint, shuffle
+import pyperclip
 
 # --------------------------  CONSTANTS --------------------------
 
@@ -8,41 +10,75 @@ BG_COLOR = 'white'
 # INPUT_LABELS_FONT_SIZE = '12'
 # ENTRY_TYPE_WIDTH = 25
 
-# --------------------------  SAVE TO FILE --------------------------
+# --------------------------  GEN PASSWORD --------------------------
 
-def add_password():
-    pass_data = open('pass_data.txt', 'a')
-    payload = {
-        'website' : website_entry.get(),
-        'password' : password_entry.get(),
-        'email' : email_entry.get()
-    }
-    f = open('pass_data.txt')
-    for line in f:
-        password_details = line.strip().split('|')
-        print(password_details)
-        # TODO need to append new password details to additional dictionary entry
-        current_passwords = {
-            'website' : password_details[0],
-            'password' : password_details[1],
-            'email' : password_details[2]
+def gen_password():
+    password_entry.delete(0,'end')
+    letters = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z']
+    numbers = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']
+    symbols = ['!', '#', '$', '%', '&', '(', ')', '*', '+']
+    password_letters = [choice(letters) for _ in range(randint(8, 10))]
+    password_symbols = [choice(symbols) for _ in range(randint(2, 4))]
+    password_numbers = [choice(numbers) for _ in range(randint(2, 4))]
+    password_list = password_letters + password_symbols + password_numbers
+    shuffle(password_list)
+    password = "".join(password_list)
+    password_entry.insert(0,password)
+    pyperclip.copy(password)
+
+# --------------------------  SAVE PASSWORD --------------------------
+
+def save():
+    # Check that the website, and password fields are not blank, if they are, send an error message and clear the fields
+    if website_entry.get() and password_entry.get() != "":
+        list_credentials = []
+        pass_data = open('pass_data.txt', 'a')
+        credential_entry = {
+            'website' : website_entry.get(),
+            'password' : password_entry.get(),
+            'email' : email_entry.get()
         }
-    print(payload["website"])
-    print('tet printing values method: ', current_passwords.values())
-    for k,v in payload.items():
-        if v == "":
-            print('A value was not supplied.')
-            # TODO Create Pop Up Window specifying required data wasn't supplied.
-        elif payload["website"] in current_passwords.values():
-            print('That website already has a password: ', v, ' Overwrite?')
-            # k["password"] == password_entry.get()
-            # overwrite the previous password with the new password
-        # else:
-        #     pass_data.write(f'{payload["website"]} | {payload["email"]} | {payload["password"]}\n')
-    
-    # pass_data.write(f'{payload["website"]} | {payload["email"]} | {payload["password"]}\n')
+        # Read the current list of passwords and store them in a list
+        f = open('pass_data.txt')
+        for line in f:
+            password_details = line.strip().split('|')
+            print(password_details)
+            current_passwords = {
+                'website' : password_details[0],
+                'password' : password_details[1],
+                'email' : password_details[2]
+            }
+            list_credentials.append(current_passwords)
+        # Determine if the user already has a password for a given website
+        for index in range(len(list_credentials)):
+            website_present = False
+            for key in list_credentials[index]:
+                # If the website name has been found in our list of passwords set flag to true
+                if website_entry.get() in list_credentials[index][key]:
+                    website_present = True
+        # Confirm password update, if website was not found, add the password to the pass_data file.
+        if website_present == True:
+            is_ok = messagebox.askokcancel(title='Confirm Change',message=f'Would you like to change the password for {website_entry.get()}')
+            if is_ok:
+                list_credentials[index]['password'] = password_entry.get()
+                messagebox.showinfo(title='Confirm Change',message=f'Password updated for {website_entry.get()}')
+                # Clear the fields after addition
+                website_entry.delete(0,'end')
+                password_entry.delete(0,'end')
+        # if the website was not found in our list, confirm that the user would like to add the new credentials
+        else:
+            is_ok = messagebox.askokcancel(title='Confirm Change',message=f'Would you like to add the password for {website_entry.get()}?')
+            if is_ok:
+                pass_data.write(f'{website_entry.get()} | {email_entry.get()} | {password_entry.get()}\n')
+                website_entry.delete(0,'end')
+                password_entry.delete(0,'end')
+    else:
+        messagebox.showerror(title='ERROR',message='Please enter a valid Website name and Password.')    
 
-# --------------------------  WINDOW --------------------------
+    # TODO Write out the new contents of the dict to the pass_data file if a password was changed.
+    # TODO Format the new contents with spaces and '|' on either side of the Website, Email and Password fields     
+
+# --------------------------  WINDOWS --------------------------
 
 window = Tk()
 window.title("Password Manager")
@@ -76,16 +112,13 @@ password_entry = Entry(bg=BG_COLOR, width=32)
 password_entry.grid(column=1,row=3)
 
 # Create Buttons
-generate_btn = Button(text='Generate Password',bg=BG_COLOR)
+generate_btn = Button(text='Generate Password',bg=BG_COLOR,command=gen_password)
 generate_btn.grid(column=2,row=3)
 
-add_btn = Button(text='Add',bg=BG_COLOR, width=43,command=add_password)
+add_btn = Button(text='Add',bg=BG_COLOR, width=43,command=save)
 add_btn.grid(column=1,row=4,columnspan=2)
 
 find_pass_entry = Button(text='Query Website Password' ,bg=BG_COLOR,width=43)
 find_pass_entry.grid(column=1,row=5,columnspan=2)
-
-
-
 
 window.mainloop()
