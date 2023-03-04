@@ -42,19 +42,20 @@ def save():
         f = open('pass_data.txt')
         for line in f:
             password_details = line.strip().split('|')
-            print(password_details)
             current_passwords = {
                 'website' : password_details[0],
-                'password' : password_details[1],
-                'email' : password_details[2]
+                'password' : password_details[2],
+                'email' : password_details[1]
             }
             list_credentials.append(current_passwords)
         # Determine if the user already has a password for a given website
+        website_present = False
         for index in range(len(list_credentials)):
-            website_present = False
-            for key in list_credentials[index]:
+            for key,value in list_credentials[index].items():
                 # If the website name has been found in our list of passwords set flag to true
-                if website_entry.get() in list_credentials[index][key]:
+                user_website = str(website_entry.get()).lower()
+                stored_pass = str(value).strip().lower()
+                if user_website == stored_pass:
                     website_present = True
         # Confirm password update, if website was not found, add the password to the pass_data file.
         if website_present == True:
@@ -65,6 +66,13 @@ def save():
                 # Clear the fields after addition
                 website_entry.delete(0,'end')
                 password_entry.delete(0,'end')
+                # Delete the old contents of the file and then write out the new contents of the dict to the pass_data file if a password was changed.
+                pass_to_be_overwritten = open('pass_data.txt', "r+")
+                pass_to_be_overwritten.seek(0)
+                pass_to_be_overwritten.truncate()
+                with open('pass_data.txt', 'a') as pass_file:
+                    for index,value in enumerate(list_credentials):
+                        pass_file.write(f"{list_credentials[index]['website']} | {list_credentials[index]['email']} | {list_credentials[index]['password']}\n")
         # if the website was not found in our list, confirm that the user would like to add the new credentials
         else:
             is_ok = messagebox.askokcancel(title='Confirm Change',message=f'Would you like to add the password for {website_entry.get()}?')
@@ -75,8 +83,7 @@ def save():
     else:
         messagebox.showerror(title='ERROR',message='Please enter a valid Website name and Password.')    
 
-    # TODO Write out the new contents of the dict to the pass_data file if a password was changed.
-    # TODO Format the new contents with spaces and '|' on either side of the Website, Email and Password fields     
+    
 
 # --------------------------  WINDOWS --------------------------
 
