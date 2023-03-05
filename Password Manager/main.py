@@ -6,10 +6,7 @@ import json
 
 # --------------------------  CONSTANTS --------------------------
 
-# FONT = 'Arial'
 BG_COLOR = 'white'
-# INPUT_LABELS_FONT_SIZE = '12'
-# ENTRY_TYPE_WIDTH = 25
 
 # --------------------------  GEN PASSWORD --------------------------
 
@@ -26,6 +23,25 @@ def gen_password():
     password = "".join(password_list)
     password_entry.insert(0,password)
     pyperclip.copy(password)
+
+# --------------------------  SEARCH PASSWORD --------------------------
+
+def query_password(website_name):
+    website = website_entry.get()
+# Search for password in JSON and return entry in popup window
+    try:
+        with open('data.json', 'r') as credential_json:
+            pass_json = json.load(credential_json)
+            print('this is my json dict: ', pass_json.items())
+            user_website_name = str(website_name).lower()
+            # Create list of web name keys from JSON passwords
+            key_name = [k for k,v in pass_json.items() if user_website_name == str(k).lower()]
+            if key_name:
+                messagebox.showinfo(title="Password Retrieved", message=f"The password for {website} is: {pass_json[key_name[0]]['password']}")
+            else:
+                messagebox.showinfo(title="Password Not Found", message=f"No Matching Password was found for {website}")
+    except FileNotFoundError:
+        messagebox.showerror(title='No Passwords',message='Currently you have no passwords stored. Please create your entries before searching.')
 
 # --------------------------  SAVE PASSWORD --------------------------
 
@@ -45,26 +61,25 @@ def save():
             }
         }
         # Determine if the user already has a password for a given website
-        # TODO if the JSON file is empty at first, catch the decode error and then write the password to the file.
         try:
-            with open('data.json', 'r') as password_file:
-                passwords = json.load(password_file)
-                if website in passwords.items():
-                # Confirm password update, if website was not found, add the password to the pass_data file.
-                    is_ok = messagebox.askokcancel(title='Confirm Change',message=f'Would you like to change the password for {email}')
-                    if is_ok:
-                        password_file.update(credential_entry)
-                        json.dump(password_file,data_file,indent=4)
-        # if the website was not found in our list, confirm that the user would like to add the new credentials
-        except Exception as JSONDecodeError:
-            print('First Password added')
-            # Write code to dump the new credential to the password file here.
+            with open('data.json', 'r') as credential_json:
+                pass_json = json.load(credential_json)
+        except FileNotFoundError:
+            # The first time a password is entered a json file will not have been created.
+            # Create JSON in write mode and store first password
+            with open('data.json', 'w') as credential_json:
+                json.dump(credential_entry,credential_json,indent=4)
+                website_entry.delete(0,'end')
+                password_entry.delete(0,'end')
+        # Add the new credential entry into the password JSON
         else:
-            is_ok = messagebox.askokcancel(title='Confirm Change',message=f'Would you like to add the password for {website_entry.get()}?')
+            is_ok = messagebox.askokcancel(title='Confirm Change',message=f'Are you sure you want to add the password for {website_entry.get()}?')
             if is_ok:
-                with open('data.json', 'w') as data_file:
-                    json.dump(credential_entry,data_file,indent=4)
-                # pass_data.write(f'{website_entry.get()} | {email_entry.get()} | {password_entry.get()}\n')
+                with open('data.json', 'r') as credential_json:
+                    pass_json = json.load(credential_json) # Reading the old data, returning a dict object
+                    pass_json.update(credential_entry) # Updating old data with new data
+                with open('data.json', 'w') as credential_json:
+                    json.dump(pass_json,credential_json,indent=4) #saving updated data
                 website_entry.delete(0,'end')
                 password_entry.delete(0,'end')
     else:
@@ -94,8 +109,8 @@ password_label = Label(text='Password:',bg=BG_COLOR)
 password_label.grid(column=0,row=3)
 
 # Create Entries
-website_entry = Entry(bg=BG_COLOR, width=50)
-website_entry.grid(column=1,row=1,columnspan=2)
+website_entry = Entry(bg=BG_COLOR, width=32)
+website_entry.grid(column=1,row=1)
 website_entry.focus()
 
 email_entry = Entry(bg=BG_COLOR, width=50)
@@ -112,7 +127,7 @@ generate_btn.grid(column=2,row=3)
 add_btn = Button(text='Add',bg=BG_COLOR, width=43,command=save)
 add_btn.grid(column=1,row=4,columnspan=2)
 
-find_pass_entry = Button(text='Query Website Password' ,bg=BG_COLOR,width=43)
-find_pass_entry.grid(column=1,row=5,columnspan=2)
+find_pass_entry = Button(text='Search' ,bg=BG_COLOR,width=10,command= lambda: query_password(website_entry.get()))
+find_pass_entry.grid(column=2,row=1)
 
 window.mainloop()
