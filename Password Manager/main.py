@@ -2,6 +2,7 @@ from tkinter import *
 from tkinter import messagebox
 from random import choice, randint, shuffle
 import pyperclip
+import json
 
 # --------------------------  CONSTANTS --------------------------
 
@@ -30,54 +31,40 @@ def gen_password():
 
 def save():
     # Check that the website, and password fields are not blank, if they are, send an error message and clear the fields
+    email = email_entry.get()
+    password = password_entry.get()
+    website = website_entry.get()
+    
     if website_entry.get() and password_entry.get() != "":
         list_credentials = []
-        pass_data = open('pass_data.txt', 'a')
+        # pass_data = open('pass_data.json', 'w')
         credential_entry = {
-            'website' : website_entry.get(),
-            'password' : password_entry.get(),
-            'email' : email_entry.get()
-        }
-        # Read the current list of passwords and store them in a list
-        f = open('pass_data.txt')
-        for line in f:
-            password_details = line.strip().split('|')
-            current_passwords = {
-                'website' : password_details[0],
-                'password' : password_details[2],
-                'email' : password_details[1]
+            website: {
+                'email' : email,
+                'password' : password
             }
-            list_credentials.append(current_passwords)
+        }
         # Determine if the user already has a password for a given website
-        website_present = False
-        for index in range(len(list_credentials)):
-            for key,value in list_credentials[index].items():
-                # If the website name has been found in our list of passwords set flag to true
-                user_website = str(website_entry.get()).lower()
-                stored_pass = str(value).strip().lower()
-                if user_website == stored_pass:
-                    website_present = True
-        # Confirm password update, if website was not found, add the password to the pass_data file.
-        if website_present == True:
-            is_ok = messagebox.askokcancel(title='Confirm Change',message=f'Would you like to change the password for {website_entry.get()}')
-            if is_ok:
-                list_credentials[index]['password'] = password_entry.get()
-                messagebox.showinfo(title='Confirm Change',message=f'Password updated for {website_entry.get()}')
-                # Clear the fields after addition
-                website_entry.delete(0,'end')
-                password_entry.delete(0,'end')
-                # Delete the old contents of the file and then write out the new contents of the dict to the pass_data file if a password was changed.
-                pass_to_be_overwritten = open('pass_data.txt', "r+")
-                pass_to_be_overwritten.seek(0)
-                pass_to_be_overwritten.truncate()
-                with open('pass_data.txt', 'a') as pass_file:
-                    for index,value in enumerate(list_credentials):
-                        pass_file.write(f"{list_credentials[index]['website']} | {list_credentials[index]['email']} | {list_credentials[index]['password']}\n")
+        # TODO if the JSON file is empty at first, catch the decode error and then write the password to the file.
+        try:
+            with open('data.json', 'r') as password_file:
+                passwords = json.load(password_file)
+                if website in passwords.items():
+                # Confirm password update, if website was not found, add the password to the pass_data file.
+                    is_ok = messagebox.askokcancel(title='Confirm Change',message=f'Would you like to change the password for {email}')
+                    if is_ok:
+                        password_file.update(credential_entry)
+                        json.dump(password_file,data_file,indent=4)
         # if the website was not found in our list, confirm that the user would like to add the new credentials
+        except Exception as JSONDecodeError:
+            print('First Password added')
+            # Write code to dump the new credential to the password file here.
         else:
             is_ok = messagebox.askokcancel(title='Confirm Change',message=f'Would you like to add the password for {website_entry.get()}?')
             if is_ok:
-                pass_data.write(f'{website_entry.get()} | {email_entry.get()} | {password_entry.get()}\n')
+                with open('data.json', 'w') as data_file:
+                    json.dump(credential_entry,data_file,indent=4)
+                # pass_data.write(f'{website_entry.get()} | {email_entry.get()} | {password_entry.get()}\n')
                 website_entry.delete(0,'end')
                 password_entry.delete(0,'end')
     else:
