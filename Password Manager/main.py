@@ -32,16 +32,16 @@ def query_password(website_name):
     try:
         with open('data.json', 'r') as credential_json:
             pass_json = json.load(credential_json)
-            print('this is my json dict: ', pass_json.items())
-            user_website_name = str(website_name).lower()
-            # Create list of web name keys from JSON passwords
-            key_name = [k for k,v in pass_json.items() if user_website_name == str(k).lower()]
-            if key_name:
-                messagebox.showinfo(title="Password Retrieved", message=f"The password for {website} is: {pass_json[key_name[0]]['password']}")
-            else:
-                messagebox.showinfo(title="Password Not Found", message=f"No Matching Password was found for {website}")
     except FileNotFoundError:
         messagebox.showerror(title='No Passwords',message='Currently you have no passwords stored. Please create your entries before searching.')
+    else:
+        user_website_name = str(website_name).lower()
+        # Create list of web name keys from JSON passwords
+        key_name = [k for k,v in pass_json.items() if user_website_name == str(k).lower()]
+        if key_name:
+            messagebox.showinfo(title="Password Retrieved", message=f"Email: {pass_json[key_name[0]]['email']}\nPassword: {pass_json[key_name[0]]['password']}")
+        else:
+            messagebox.showinfo(title="Password Not Found", message=f"No Matching Password was found for {website}")
 
 # --------------------------  SAVE PASSWORD --------------------------
 
@@ -110,24 +110,24 @@ password_label.grid(column=0,row=3)
 
 # Create Entries
 website_entry = Entry(bg=BG_COLOR, width=32)
-website_entry.grid(column=1,row=1)
+website_entry.grid(column=1,row=1,pady=5)
 website_entry.focus()
 
-email_entry = Entry(bg=BG_COLOR, width=50)
-email_entry.grid(column=1,row=2,columnspan=2)
+email_entry = Entry(bg=BG_COLOR, width=51)
+email_entry.grid(column=1,row=2,columnspan=2,pady=5)
 email_entry.insert(0,'hayd.reid@gmail.com')
 
 password_entry = Entry(bg=BG_COLOR, width=32)
-password_entry.grid(column=1,row=3)
+password_entry.grid(column=1,row=3,pady=5)
 
 # Create Buttons
 generate_btn = Button(text='Generate Password',bg=BG_COLOR,command=gen_password)
 generate_btn.grid(column=2,row=3)
 
 add_btn = Button(text='Add',bg=BG_COLOR, width=43,command=save)
-add_btn.grid(column=1,row=4,columnspan=2)
+add_btn.grid(column=1,row=4,columnspan=2,pady=5)
 
-find_pass_entry = Button(text='Search' ,bg=BG_COLOR,width=10,command= lambda: query_password(website_entry.get()))
+find_pass_entry = Button(text='Search' ,bg=BG_COLOR,width=15,command= lambda: query_password(website_entry.get()))
 find_pass_entry.grid(column=2,row=1)
 
 window.mainloop()
